@@ -3,7 +3,7 @@
 Workflow configurations and extensions for setting up and running simulation campaigns using the O1v5 circuit
 
 ## Folder organization:
-* __[/blob_stim_replication/workflows](/toposample/workflows)__\
+* __[/blob_stim_replication/workflows](/blob_stim_replication/workflows)__\
   Config files for replication experiment of BlobStim experiment (proj32) using converted O1v5-SONATA circuit [NSETM-1222] with original TC (BlobStim) projections.
 
 ## Requirements:
