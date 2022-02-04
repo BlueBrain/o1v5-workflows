@@ -14,13 +14,12 @@ Run Default
             CircuitTarget $circuit_target
                  Duration $sim_duration
                        Dt 0.025
-              ForwardSkip $forward_skip
 
                   RNGMode Random123
                  BaseSeed $seed
 
                 Simulator CORENEURON
-                  RunMode LoadBalance
+                  RunMode WholeCell
 }
 
 Projection Thalamocortical_input_VPM_O1
