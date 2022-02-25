@@ -176,17 +176,17 @@ Connection ConInh-Uni
               Source Inhibitory
          Destination Mosaic
               Weight 1.0
-	      SpontMinis 0.012
+          SpontMinis 0.012
 }
 
 
 # Adjust global synapse parameters, e.g. reversals
 Connection GABAB_erev
 {
-	          Source Inhibitory
-	     Destination Mosaic
-	          Weight 1.0
-	SynapseConfigure %s.e_GABAA = -80.0 %s.e_GABAB = -75.8354310081
+              Source Inhibitory
+         Destination Mosaic
+              Weight 1.0
+    SynapseConfigure %s.e_GABAA = -80.0 %s.e_GABAB = -75.8354310081
 }
 
 
@@ -196,7 +196,7 @@ Connection scheme_CaUse_ee
               Source Excitatory
          Destination Excitatory
               Weight 1.0
-    SynapseConfigure %s.Use *= 0.158401372855
+    SynapseConfigure %s.Use *= $f_e2e
 }
 
 Connection scheme_CaUse_e_2_PV_FS
@@ -204,7 +204,7 @@ Connection scheme_CaUse_e_2_PV_FS
               Source Excitatory
          Destination PV_FS
               Weight 1.0
-    SynapseConfigure %s.Use *= 0.647467256852
+    SynapseConfigure %s.Use *= $f_e2pv
 }
 
 Connection scheme_CaUse_PV_FS_2_e
@@ -212,7 +212,7 @@ Connection scheme_CaUse_PV_FS_2_e
               Source PV_FS
          Destination Excitatory
               Weight 1.0
-    SynapseConfigure %s.Use *= 0.647467256852
+    SynapseConfigure %s.Use *= $f_e2pv
 }
 
 Connection scheme_CaUse_e_2_DISTAR_INH
@@ -220,7 +220,7 @@ Connection scheme_CaUse_e_2_DISTAR_INH
               Source Excitatory
          Destination DISTAR_INH
               Weight 1.0
-    SynapseConfigure %s.Use *= 0.158401372855
+    SynapseConfigure %s.Use *= $f_e2e
 }
 
 Connection scheme_CaUse_DISTAR_INH_2_e
@@ -228,7 +228,7 @@ Connection scheme_CaUse_DISTAR_INH_2_e
               Source DISTAR_INH
          Destination Excitatory
               Weight 1.0
-    SynapseConfigure %s.Use *= 0.158401372855
+    SynapseConfigure %s.Use *= $f_e2e
 }
 
 Connection scheme_CaUse_e_2_Other_Inh
@@ -236,7 +236,7 @@ Connection scheme_CaUse_e_2_Other_Inh
               Source Excitatory
          Destination Other_Inh
               Weight 1.0
-    SynapseConfigure %s.Use *= 0.402934314853
+    SynapseConfigure %s.Use *= $f_i2i
 }
 
 Connection scheme_CaUse_Other_Inh_2_e
@@ -244,7 +244,7 @@ Connection scheme_CaUse_Other_Inh_2_e
               Source Other_Inh
          Destination Excitatory
               Weight 1.0
-    SynapseConfigure %s.Use *= 0.402934314853
+    SynapseConfigure %s.Use *= $f_i2i
 }
 
 Connection scheme_CaUse_Inh_Inh
@@ -252,7 +252,7 @@ Connection scheme_CaUse_Inh_Inh
               Source Inhibitory
          Destination Inhibitory
               Weight 1.0
-    SynapseConfigure %s.Use *= 0.402934314853
+    SynapseConfigure %s.Use *= $f_i2i
 }
 
 
