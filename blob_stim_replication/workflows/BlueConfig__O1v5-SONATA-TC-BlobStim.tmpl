@@ -51,7 +51,7 @@ Stimulus ThresholdExc
 {
                 Mode Current
              Pattern RelativeLinear
-        PercentStart 100.457136089
+        PercentStart $k_inj
                Delay 0.0
             Duration $sim_duration
 }
@@ -60,7 +60,7 @@ Stimulus ThresholdInh
 {
                 Mode Current
              Pattern RelativeLinear
-        PercentStart 100.457136089
+        PercentStart $k_inj
                Delay 0.0
             Duration $sim_duration
 }
@@ -69,7 +69,7 @@ Stimulus Threshold_dNAC_dSTUT
 {
                 Mode Current
              Pattern RelativeLinear
-        PercentStart 81.3702802318
+        PercentStart $k_inj_dnac
                Delay 200.0
             Duration $sim_duration
 }
@@ -186,7 +186,7 @@ Connection GABAB_erev
               Source Inhibitory
          Destination Mosaic
               Weight 1.0
-    SynapseConfigure %s.e_GABAA = -80.0 %s.e_GABAB = -75.8354310081
+    SynapseConfigure %s.e_GABAA = -80.0 %s.e_GABAB = $e_GABAB
 }
 
 
