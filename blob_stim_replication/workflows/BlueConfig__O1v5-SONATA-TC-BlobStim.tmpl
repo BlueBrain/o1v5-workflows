@@ -190,7 +190,7 @@ Connection GABAB_erev
 }
 
 
-# Adjust release probability (Use) to Calcium 1.2 mM (default 2.0 mM)
+# Adjust release probability (Use) to Calcium $ca mM (default 2.0 mM)
 Connection scheme_CaUse_ee
 {
               Source Excitatory
@@ -342,5 +342,5 @@ Connection scheme_CaUse_ee_tc2c
               Source proj_Thalamocortical_VPM_Source
          Destination Mosaic
               Weight 1.0
-    SynapseConfigure %s.Use *= 0.158401372855
+    SynapseConfigure %s.Use *= $f_e2e
 }
