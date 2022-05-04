@@ -12,6 +12,34 @@ import lookup_projection_locations as projloc
 import stimulus_generation as stgen
 
 
+""" Generates user target file, combining targets from custom list and projection paths """
+def generate_user_target(*, circuit_config, path, custom_user_targets=[], **kwargs):
+    
+    circuit = Circuit(circuit_config)
+    proj_paths = list(circuit.config['projections'].values())
+    proj_targets = [os.path.join(os.path.split(p)[0], 'user.target') for p in proj_paths]
+    proj_targets = list(filter(os.path.exists, proj_targets))
+    
+    target_paths = custom_user_targets + proj_targets
+    
+    user_target_name = 'user.target'
+    user_target_file = os.path.join(path, user_target_name)
+    with open(user_target_file, 'w') as f_tgt:
+        for p in target_paths:
+            assert os.path.exists(p), f'ERROR: Target "{p}" not found!'
+            with open(p, 'r') as f_src:
+                f_tgt.write(f_src.read())
+                f_tgt.write('\n\n')
+            # print(f'INFO: Adding target "{p}" to "{os.path.join(os.path.split(path)[-1], user_target_name)}"')
+    
+    # Set group membership to same as <path> (should be 10067/"bbp")
+    # os.chown(user_target_file, uid=-1, gid=os.stat(path).st_gid) # [NOT NEEDED ANY MORE?]
+    
+    # print(f'INFO: Generated user target "{os.path.join(os.path.split(path)[-1], user_target_name)}"')
+    
+    return {'user_target_name': user_target_name}
+
+
 def stim_file_from_template(*, path, stim_file_template, **kwargs):
     """Places a stimulation spike file based on an existing template into
        the simulation folders:
