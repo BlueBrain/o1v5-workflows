@@ -345,5 +345,11 @@ Connection scheme_CaUse_ee_tc2c
     SynapseConfigure %s.Use *= $f_e2e
 }
 
-# Remove any list of connections, by setting their weights to zero
-$removed_conns_blocks
+# Remove outgoing connections from selected cells
+Connection conns_removed
+{
+              Source $conns_remove_src
+         Destination Mosaic
+              Weight 0.0
+          SpontMinis 0.0
+}
