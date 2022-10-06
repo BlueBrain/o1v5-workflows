@@ -278,17 +278,24 @@ def config_section_from_dict(sect_type, sect_name, param_dict, intend=4):
     return section_str
 
 
-def remove_connections(*, path, circuit_config, circuit_target, remove_conns_list, remove_conns_mode, remove_conns_amount, remove_conns_seed, custom_user_targets=[], **kwargs):
+def remove_connections(*, path, seed, circuit_config, circuit_target, remove_conns_list, remove_conns_mode, remove_conns_amount, remove_conns_seed, remove_conns_seed_mode, custom_user_targets=[], **kwargs):
     """ Param-processor to remove connections between neurons, by creating "Connections" blocks with weights set to zero
-          remove_conns_list: List of connections, or .csv file (2 columns with src/tgt GIDs, no header) with list of connections,
-                             defined either as list of pre/post cell GIDs or as exactly one pre and one post cell target name
+          remove_conns_list: List of exactly one pre and one post cell target name, or
+                             list of connections containing lists of pre/post cell GIDs, or
+                             .csv file (2 columns with src/tgt GIDs, no header) with list of connections, or
+                             .npy file (<2xN> array with src/tgt GIDs) with list of connections
           remove_conns_mode: "directed": List of directed connections assumed; a certain amount of connections if removed
                              "reciprocal": List of reciprocal connections assumed; a certain amount of reciprocal connections is replaced by single edges choosing their direction at random
           remove_conns_amount: Amount of connections to be removed, either defined as fraction (float between 0.0 and 1.0) or absolute number (integer >= 0)
+                               Can be provided as single value, or list of values in which case campaign generator will cycle throu this list taking different numbers for different simulations
           remove_conns_seed: Seed for randomly selecting connections to be removed
+          remove_conns_seed_mode: "constant" ... Use same seed for all simulations
+                                  "add_sim_idx" ... Add sim index to for seeding each simulation, i.e., different seeds across simulations
           Returns: String with "Connection" blocks for the BlueConfig
                    Target file name added to custom_user_targets [generate_user_target param-processor must be run AFTERWARDS]
     """
+    sim_idx = int(os.path.split(path)[-1])
+
     if isinstance(remove_conns_list, list):
         if np.ndim(remove_conns_list) == 1: # OPTION 1: List of pre/post target specifications
             assert len(remove_conns_list) == 2, 'ERROR: Pre/post cell target specification pair required!'
@@ -299,29 +306,48 @@ def remove_connections(*, path, circuit_config, circuit_target, remove_conns_lis
         else: # OPTION 2: List of connections (GID pairs)
             assert np.ndim(remove_conns_list) == 2, 'ERROR: 2D list of pre/post GID pairs required!'
             conns_all = pd.DataFrame(remove_conns_list)
-    elif isinstance(remove_conns_list, str): # OPTION 3: .csv file to load connections (GID pairs) from
-        conns_all = pd.read_csv(remove_conns_list, header=None)
+    elif isinstance(remove_conns_list, str): # OPTION 3: Load connections (GID pairs) from file
+        if os.path.splitext(remove_conns_list)[-1].lower() == '.csv': # (3a) .csv file with 2 columns
+            conns_all = pd.read_csv(remove_conns_list, header=None)
+        elif os.path.splitext(remove_conns_list)[-1].lower() == '.npy': # (3b) .npy file with <2xN> array
+            conns_all = pd.DataFrame(np.load(remove_conns_list).T)
+        else:
+            assert False, 'ERROR: Only ".csv" or ".npy" files supported!'
     else:
-        assert False, 'ERROR: remove_conns_list must be a list or .csv filename!'
+        assert False, 'ERROR: remove_conns_list must be a list or filename!'
 
     assert conns_all.shape[1] == 2, 'ERROR: remove_conns_list must contain two columns (pre/post)!'
 
     # Determine amount of connections to be removed
+    if isinstance(remove_conns_amount, list):
+        amount = remove_conns_amount[np.mod(sim_idx, len(remove_conns_amount))]
+    else:
+        amount = remove_conns_amount
     N_all = conns_all.shape[0]
-    if isinstance(remove_conns_amount, float):
-        assert 0.0 <= remove_conns_amount <= 1.0, 'ERROR: remove_conns_amount (fraction) out of range!'
-        N_sel = np.round(N_all * remove_conns_amount).astype(int)
-    elif isinstance(remove_conns_amount, int):
-        assert remove_conns_amount >= 0, 'ERROR: remove_conns_amount (count) out of range!'
-        N_sel = np.minimum(N_all, remove_conns_amount)
-        if N_sel < remove_conns_amount:
+    if isinstance(amount, float):
+        assert 0.0 <= amount <= 1.0, 'ERROR: amount (fraction) out of range!'
+        N_sel = np.round(N_all * amount).astype(int)
+    elif isinstance(amount, int):
+        assert amount >= 0, 'ERROR: amount (count) out of range!'
+        N_sel = np.minimum(N_all, amount)
+        if N_sel < amount:
             print('WARNING: Not enouch connections to be removed!')
-    print(f'INFO: Selected {N_sel} of {N_all} {remove_conns_mode} connections to be removed (amount={remove_conns_amount})!')
+    else:
+        assert False, 'ERROR: Amount(s) must be of type "float" or "int"!'
 
     # Select connections to be removed
-    np.random.seed(remove_conns_seed)
+    if remove_conns_seed_mode == 'constant':
+        rmv_seed = remove_conns_seed
+    elif remove_conns_seed_mode == 'add_sim_idx':
+        rmv_seed = remove_conns_seed + sim_idx
+    elif remove_conns_seed_mode == 'add_sim_seed':
+        rmv_seed = remove_conns_seed + seed
+    else:
+        assert False, f'ERROR: Seed mode "{remove_conns_seed_mode}" unknown!'
+    np.random.seed(rmv_seed)
     sel_idx = np.sort(np.random.choice(N_all, N_sel, replace=False))
     conns_sel = conns_all.iloc[sel_idx]
+    print(f'INFO: <SIM{sim_idx}> Randomly selected {N_sel} of {N_all} {remove_conns_mode} connections to be removed (amount={amount}, seed={rmv_seed})!')
 
     # Remove connections, creating (i) "Connection" blocks and (ii) cell targets
     target_file = os.path.join(path, 'conns_removed.target')
@@ -347,8 +373,9 @@ def remove_connections(*, path, circuit_config, circuit_target, remove_conns_lis
         with open(target_file, 'a') as fid:
             fid.write(target_str)
 
-    # Write to .csv file
+    # Write to .csv & .npy files
     pd.DataFrame(conns_removed).to_csv(os.path.join(path, 'conns_removed.csv'), index=False, header=False)
+    np.save(os.path.join(path, 'conns_removed.npy'), np.array(conns_removed).T)
 
     # Add .target file to user targets
     if N_sel > 0:
