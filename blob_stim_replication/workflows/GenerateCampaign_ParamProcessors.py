@@ -290,7 +290,8 @@ def remove_connections(*, path, seed, circuit_config, circuit_target, remove_con
                                Can be provided as single value, or list of values in which case campaign generator will cycle throu this list taking different numbers for different simulations
           remove_conns_seed: Seed for randomly selecting connections to be removed
           remove_conns_seed_mode: "constant" ... Use same seed for all simulations
-                                  "add_sim_idx" ... Add sim index to for seeding each simulation, i.e., different seeds across simulations
+                                  "add_sim_idx" ... Add sim index for seeding each simulation, i.e., different removal seeds across simulations
+                                  "add_sim_seed" ... Add sim seed for seeding each simulation, i.e., different removal seeds across simulations, depending on simulation seed
           Returns: String with "Connection" blocks for the BlueConfig
                    Target file name added to custom_user_targets [generate_user_target param-processor must be run AFTERWARDS]
     """
