@@ -1,7 +1,7 @@
 # Description:   BBP-WORKFLOW parameter processor functions used to generate SSCx simulation campaigns
 # Author:        C. Pokorny
 # Date:          02/2022
-# Last modified: 09/2022
+# Last modified: 10/2022
 
 import json
 import hashlib
@@ -320,15 +320,17 @@ def remove_connections(*, path, seed, circuit_config, circuit_target, remove_con
 
     # Determine amount of connections to be removed
     if isinstance(remove_conns_amount, list):
+        if sim_idx >= len(remove_conns_amount):
+            print(f'WARNING: Simulation count exceeds length of amount list - REPEATING FROM BEGINNING!')
         amount = remove_conns_amount[np.mod(sim_idx, len(remove_conns_amount))]
     else:
         amount = remove_conns_amount
     N_all = conns_all.shape[0]
     if isinstance(amount, float):
-        assert 0.0 <= amount <= 1.0, 'ERROR: amount (fraction) out of range!'
+        assert 0.0 <= amount <= 1.0, 'ERROR: Amount (fraction) out of range!'
         N_sel = np.round(N_all * amount).astype(int)
     elif isinstance(amount, int):
-        assert amount >= 0, 'ERROR: amount (count) out of range!'
+        assert amount >= 0, 'ERROR: Amount (count) out of range!'
         N_sel = np.minimum(N_all, amount)
         if N_sel < amount:
             print('WARNING: Not enouch connections to be removed!')
@@ -383,3 +385,47 @@ def remove_connections(*, path, seed, circuit_config, circuit_target, remove_con
 
     return {'removed_conns_blocks': conns_blocks, 'custom_user_targets': custom_user_targets}
 
+
+def remove_outgoing_connections(*, path, circuit_config, circuit_target, remove_conns_src_list, remove_conns_block_table=None, custom_user_targets=[], **kwargs):
+    """ Param-processor to remove outgoing connections from a list of source neurons (optionally, based on some block design)
+          remove_conns_src_list: List of source GIDs whose outgoing connections to be removed
+          remove_conns_block_table (OPTIONAL): .npy file containing boolean <#src x #sims> array with boolean selections of source neurons (from remove_conns_src_list) in each simulation
+          Returns: String with "conns_remove_src" target name
+                   Target file containing that target added to custom_user_targets [generate_user_target param-processor must be run AFTERWARDS]
+    """
+    sim_idx = int(os.path.split(path)[-1])
+
+    if remove_conns_block_table is None:
+        sel_idx = np.ones(len(remove_conns_src_list), dtype=bool) # Select all
+    else:
+        block_table = np.load(remove_conns_block_table)
+        assert block_table.shape[0] == len(remove_conns_src_list), 'ERROR: Block design does not match source GID list!'
+        if sim_idx >= block_table.shape[1]:
+            print(f'WARNING: Simulation count exceeds length of block design - REPEATING FROM BEGINNING!')
+        sel_idx = block_table[:, np.mod(sim_idx, block_table.shape[1])]
+    gids_sel = np.array(remove_conns_src_list)[sel_idx]
+    bin_code = int(''.join(sel_idx.astype(int).astype(str)), 2) # Convert binary pattern to integer [just for logging/testing]
+    print(f'INFO: <SIM{sim_idx}> Selected {len(gids_sel)} of {len(sel_idx)} sources of outgoing connections to be removed (selection code {bin_code})!')
+
+    # Create cell target
+    hash_obj = hashlib.shake_128()
+    hash_obj.update(str(gids_sel).encode('UTF-8'))
+    hash_code = hash_obj.hexdigest(4).upper()
+
+    target_file = os.path.join(path, 'outgoing_conns_removed.target')
+    cell_target_name = 'OutgoingConnsRemovedSrc_' + hash_code
+    with open(target_file, 'a') as fid:
+        gids_str = ' '.join([f'a{gid}' for gid in gids_sel])
+        target_str = f'Target Cell {cell_target_name}\n{{\n{gids_str}\n}}\n'
+        fid.write(target_str)
+    print(f'Cell target "{cell_target_name}" with {len(gids_sel)} cells written to {target_file}')
+
+    # Write to .csv & .npy files
+    pd.DataFrame(gids_sel).to_csv(os.path.join(path, 'outgoing_conns_removed.csv'), index=False, header=False)
+    np.save(os.path.join(path, 'outgoing_conns_removed.npy'), gids_sel)
+
+    # Add .target file to user targets
+    if len(gids_sel) > 0:
+        custom_user_targets.append(target_file)
+
+    return {'conns_remove_src': cell_target_name, 'custom_user_targets': custom_user_targets}
