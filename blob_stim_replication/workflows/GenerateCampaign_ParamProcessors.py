@@ -353,32 +353,37 @@ def remove_connections(*, path, seed, circuit_config, circuit_target, remove_con
     print(f'INFO: <SIM{sim_idx}> Randomly selected {N_sel} of {N_all} {remove_conns_mode} connections to be removed (amount={amount}, seed={rmv_seed})!')
 
     # Remove connections, creating (i) "Connection" blocks and (ii) cell targets
-    target_file = os.path.join(path, 'conns_removed.target')
     conns_blocks = ''
     conns_removed = []
-    for idx, c in enumerate(conns_sel.to_numpy()):
-        if remove_conns_mode == 'directed':
-            pass # Remove connection as it is
-        elif remove_conns_mode == 'reciprocal':
-            c = np.random.permutation(c) # Select one direction at random  to be removed
-        else:
-            assert False, f'ERROR: remove_conns_mode "{remove_conns_mode}" unknown!'
+    target_file = os.path.join(path, 'conns_removed.target')
+    with open(target_file, 'a') as fid:
+        for idx, c in enumerate(conns_sel.to_numpy()):
+            if remove_conns_mode == 'directed':
+                pass # Remove connection as it is
+            elif remove_conns_mode == 'reciprocal':
+                c = np.random.permutation(c) # Select one direction at random  to be removed
+            else:
+                assert False, f'ERROR: remove_conns_mode "{remove_conns_mode}" unknown!'
 
-        # Create "Connection" block with weight zero
-        target_name = f'ConnRemoved_{idx}'
-        param_dict = {'Source': target_name + '_src', 'Destination': target_name + '_dest', 'Weight': 0.0, 'SpontMinis': 0.0}
-        conns_blocks += config_section_from_dict('Connection', target_name, param_dict, intend=4)
-        conns_removed.append(c)
+            # Create "Connection" block with weight zero
+            target_name = f'ConnRemoved_{idx}'
+            param_dict = {'Source': target_name + '_src', 'Destination': target_name + '_dest', 'Weight': 0.0, 'SpontMinis': 0.0}
+            conns_blocks += config_section_from_dict('Connection', target_name, param_dict, intend=4)
+            conns_removed.append(c)
 
-        # Create named single-cell src/dest targets
-        target_str = f'Target Cell {target_name}_src\n{{\na{c[0]}\n}}\n\n'
-        target_str += f'Target Cell {target_name}_dest\n{{\na{c[1]}\n}}\n\n'
-        with open(target_file, 'a') as fid:
+            # Create named single-cell src/dest targets
+            target_str = f'Target Cell {target_name}_src\n{{\na{c[0]}\n}}\n\n'
+            target_str += f'Target Cell {target_name}_dest\n{{\na{c[1]}\n}}\n\n'
+
+            # Write to .target file
             fid.write(target_str)
 
     # Write to .csv & .npy files
     pd.DataFrame(conns_removed).to_csv(os.path.join(path, 'conns_removed.csv'), index=False, header=False)
     np.save(os.path.join(path, 'conns_removed.npy'), np.array(conns_removed).T)
+
+    # Remove "conns_removed.target" user targets files, if existing from other simulations
+    custom_user_targets = list(filter(lambda t: os.path.split(target_file)[1] != os.path.split(t)[1], custom_user_targets))
 
     # Add .target file to user targets
     if N_sel > 0:
@@ -424,6 +429,9 @@ def remove_outgoing_connections(*, path, circuit_config, circuit_target, remove_
     # Write to .csv & .npy files
     pd.DataFrame(gids_sel).to_csv(os.path.join(path, 'outgoing_conns_removed.csv'), index=False, header=False)
     np.save(os.path.join(path, 'outgoing_conns_removed.npy'), gids_sel)
+
+    # Remove "outgoing_conns_removed.target" user targets files, if existing from other simulations
+    custom_user_targets = list(filter(lambda t: os.path.split(target_file)[1] != os.path.split(t)[1], custom_user_targets))
 
     # Add .target file to user targets
     if len(gids_sel) > 0:
