@@ -1,7 +1,7 @@
 # Description:   BBP-WORKFLOW parameter processor functions used to generate SSCx simulation campaigns
 # Author:        C. Pokorny
 # Date:          02/2022
-# Last modified: 10/2022
+# Last modified: 12/2022
 
 import json
 import hashlib
@@ -294,6 +294,8 @@ def remove_connections(*, path, seed, circuit_config, circuit_target, remove_con
                                   "add_sim_seed" ... Add sim seed for seeding each simulation, i.e., different removal seeds across simulations, depending on simulation seed
           Returns: String with "Connection" blocks for the BlueConfig
                    Target file name added to custom_user_targets [generate_user_target param-processor must be run AFTERWARDS]
+          
+          NOTE: For the same remove_conns_seed, the exact same (random) selection of connections (choice & direction) will consistently be included in higher amounts (plus some new ones)!
     """
     sim_idx = int(os.path.split(path)[-1])
 
@@ -348,9 +350,20 @@ def remove_connections(*, path, seed, circuit_config, circuit_target, remove_con
     else:
         assert False, f'ERROR: Seed mode "{remove_conns_seed_mode}" unknown!'
     np.random.seed(rmv_seed)
-    sel_idx = np.sort(np.random.choice(N_all, N_sel, replace=False))
+    sel_idx = np.random.choice(N_all, N_sel, replace=False)
+    sort_idx = np.argsort(sel_idx)
+    sel_idx = sel_idx[sort_idx] # Sort selected connections by index
     conns_sel = conns_all.iloc[sel_idx]
-    print(f'INFO: <SIM{sim_idx}> Randomly selected {N_sel} of {N_all} {remove_conns_mode} connections to be removed (amount={amount}, seed={rmv_seed})!')
+
+    # Select connection direction to be removed
+    if remove_conns_mode == 'directed':
+        dir_sel = np.zeros_like(sel_idx) # Remove connection as it is
+    elif remove_conns_mode == 'reciprocal':
+        dir_sel = np.random.choice(2, len(sel_idx)) # Select one direction at random to be removed
+    else:
+        assert False, f'ERROR: remove_conns_mode "{remove_conns_mode}" unknown!'
+    dir_sel = dir_sel[sort_idx] # Sort direction selection as well, so that consistent across different numbers of connections to be removed (with same seed)
+    print(f'INFO: <SIM{sim_idx}> Randomly selected {N_sel} of {N_all} {remove_conns_mode} connections ({np.sum(dir_sel)} directions flipped) to be removed (amount={amount}, seed={rmv_seed})!')
 
     # Remove connections, creating (i) "Connection" blocks and (ii) cell targets
     conns_blocks = ''
@@ -358,12 +371,8 @@ def remove_connections(*, path, seed, circuit_config, circuit_target, remove_con
     target_file = os.path.join(path, 'conns_removed.target')
     with open(target_file, 'a') as fid:
         for idx, c in enumerate(conns_sel.to_numpy()):
-            if remove_conns_mode == 'directed':
-                pass # Remove connection as it is
-            elif remove_conns_mode == 'reciprocal':
-                c = np.random.permutation(c) # Select one direction at random  to be removed
-            else:
-                assert False, f'ERROR: remove_conns_mode "{remove_conns_mode}" unknown!'
+            if dir_sel[idx] == 1:
+                c = np.flip(c) # Flip direction
 
             # Create "Connection" block with weight zero
             target_name = f'ConnRemoved_{idx}'
