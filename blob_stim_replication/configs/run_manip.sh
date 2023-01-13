@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #SBATCH --job-name=conn_manip
-#SBATCH --time=8:00:00
+#SBATCH --time=2:00:00
 #SBATCH --account=proj9
 #SBATCH --partition=prod
 #SBATCH --mem=0
