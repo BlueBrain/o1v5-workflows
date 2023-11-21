@@ -1,0 +1,29 @@
+{
+  "circuit_path": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/circuits/O1v5-SONATA",
+  "circuit_config": "sonata/circuit_config.json",
+  "output_path": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/circuits/O1v5-SONATA__RecipRemoval_StructDim56-0",
+  "blue_config_to_update": "CircuitConfig_TC_BlobStim",
+  "workflow_template": "../templates/bbp-workflow_RegisterCircuit_SSCx.cfg",
+  "seed": 0,
+  "N_split_nodes": 1,
+  "manip": {
+    "name": "RecipRemoval_StructDim56-0",
+    "fcts": [
+      {
+        "source": "conn_removal",
+        "kwargs": {
+          "sel_src": {
+            "node_set": "mc2_Column",
+            "synapse_class": "EXC"
+          },
+          "sel_dest": {
+            "node_set": "mc2_Column",
+            "synapse_class": "EXC"
+          },
+          "amount_pct": 100.0,
+          "conn_mask_file": "/gpfs/bbp.cscs.ch/home/pokorny/JupyterLab/git/o1v5-workflows/blob_stim_replication/configs/RecipRemoval_StructDim56/0/conns_removed_adjmat.npz"
+        }
+      }
+    ]
+  }
+}

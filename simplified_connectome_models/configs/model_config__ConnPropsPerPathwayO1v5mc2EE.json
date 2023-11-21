@@ -1,0 +1,69 @@
+{
+  "working_dir": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/pokorny/simplified_connectome_models/model_building/O1v5-SONATA",
+  "out_dir": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/pokorny/simplified_connectome_models/model_building/O1v5-SONATA",
+  "seed": 7531,
+  "circuit_config": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/circuits/O1v5-SONATA/sonata/circuit_config_tmp.json",
+  "model": {
+    "name": "ConnPropsPerPathwayO1v5mc2EE",
+    "fct": {
+      "source": "conn_props",
+      "kwargs": {
+        "sel_src": {
+          "hypercolumn": 2,
+          "synapse_class": "EXC"
+        },
+        "sel_dest": {
+          "hypercolumn": 2,
+          "synapse_class": "EXC"
+        },
+        "min_sample_size_per_group": 10,
+        "max_sample_size_per_group": 1000,
+        "distr_types": {
+          "absolute_efficacy": "constant",
+          "conductance": "gamma",
+          "decay_time": "truncnorm",
+          "depression_time": "gamma",
+          "facilitation_time": "gamma",
+          "n_rrp_vesicles": "discrete",
+          "n_syn_per_conn": "discrete",
+          "syn_type_id": "constant",
+          "u_syn": "truncnorm",
+          "morpho_branch_order_axon": "constant",
+          "morpho_branch_order_dend": "constant",
+          "nrn_line": "constant"
+        },
+        "data_types": {
+          "absolute_efficacy": "int",
+          "n_rrp_vesicles": "int",
+          "n_syn_per_conn": "int",
+          "syn_type_id": "int",
+          "morpho_branch_order_axon": "int",
+          "morpho_branch_order_dend": "int",
+          "nrn_line": "int"
+        },
+        "data_bounds": {
+          "n_rrp_vesicles": [
+            1,
+            1000
+          ],
+          "n_syn_per_conn": [
+            1,
+            1000
+          ],
+          "morpho_branch_order_axon": [
+            0,
+            0
+          ],
+          "morpho_branch_order_dend": [
+            0,
+            0
+          ],
+          "nrn_line": [
+            0,
+            0
+          ]
+        }
+      }
+    }
+  }
+}

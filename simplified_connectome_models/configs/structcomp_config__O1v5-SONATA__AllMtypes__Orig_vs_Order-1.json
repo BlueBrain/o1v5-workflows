@@ -1,0 +1,45 @@
+{
+  "working_dir": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/pokorny/simplified_connectome_models/struct_comparison/O1v5-SONATA__AllMtypes",
+  "out_dir": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/pokorny/simplified_connectome_models/struct_comparison/O1v5-SONATA__AllMtypes",
+  "circuits": {
+    "0": {
+      "circuit_config": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/circuits/O1v5-SONATA/sonata/circuit_config_tmp.json",
+      "circuit_name": "Orig"
+    },
+    "1": {
+      "circuit_config": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/circuits/O1v5-SONATA__ConnRewireOrder1mc2EE100pct/circuit_config.json",
+      "circuit_name": "Order-1"
+    }
+  },
+  "plot_types": [
+    {
+      "name": "ConnPerMtype_mc2",
+      "fct": {
+        "source": "connectivity",
+        "kwargs": {
+          "group_by": "mtype",
+          "skip_empty_groups": false,
+          "sel_src": {
+            "hypercolumn": 2
+          },
+          "sel_dest": {
+            "hypercolumn": 2
+          }
+        }
+      },
+      "res_sel": [
+        "nsyn_conn",
+        "conn_prob"
+      ],
+      "range_prctile": 100,
+      "fig_size": [
+        11,
+        3
+      ],
+      "fig_file": {
+        "format": "png",
+        "dpi": 600
+      }
+    }
+  ]
+}

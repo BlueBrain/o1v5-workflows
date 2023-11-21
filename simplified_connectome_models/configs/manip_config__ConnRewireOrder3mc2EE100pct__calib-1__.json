@@ -1,0 +1,39 @@
+{
+  "circuit_config": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/circuits/O1v5-SONATA/sonata/circuit_config_tmp.json",
+  "seed": 3210,
+  "manip": {
+    "name": "ConnRewireOrder3mc2EE100pct__calib-1__",
+    "fcts": [
+      {
+        "source": "conn_rewiring",
+        "sel_src": {
+          "hypercolumn": 2,
+          "synapse_class": "EXC"
+        },
+        "sel_dest": {
+          "hypercolumn": 2,
+          "synapse_class": "EXC"
+        },
+        "syn_class": "EXC",
+        "keep_indegree": false,
+        "reuse_conns": false,
+        "gen_method": "duplicate_randomize",
+        "amount_pct": 100,
+        "estimation_run": true,
+        "opt_nconn": false,
+        "p_scale": 1.0063007270173352,
+        "model_config": {
+          "prob_model_spec": {
+            "file": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/pokorny/simplified_connectome_models/model_building/O1v5-SONATA/model/ConnProb3rdOrderComplexO1v5mc2EE.json"
+          },
+          "delay_model_spec": {
+            "file": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/pokorny/simplified_connectome_models/model_building/O1v5-SONATA/model/DistDepDelayO1v5mc2EE.json"
+          },
+          "props_model_spec": {
+            "file": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/pokorny/simplified_connectome_models/model_building/O1v5-SONATA/model/ConnPropsPerPathwayO1v5mc2EE.json"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "working_dir": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/pokorny/simplified_connectome_models/model_building/O1v5-SONATA",
+  "out_dir": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/pokorny/simplified_connectome_models/model_building/O1v5-SONATA",
+  "seed": 7531,
+  "circuit_config": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/circuits/O1v5-SONATA/sonata/circuit_config_tmp.json",
+  "model": {
+    "name": "ConnProb2ndOrderComplexO1v5mc2EE",
+    "fct": {
+      "source": "conn_prob",
+      "kwargs": {
+        "order": 2,
+        "model_specs": {
+          "type": "ComplexExponential"
+        },
+        "sel_src": {
+          "hypercolumn": 2,
+          "synapse_class": "EXC"
+        },
+        "sel_dest": {
+          "hypercolumn": 2,
+          "synapse_class": "EXC"
+        },
+        "min_count_per_bin": 100,
+        "bin_size_um": 50,
+        "max_range_um": null,
+        "sample_size": null
+      }
+    }
+  }
+}

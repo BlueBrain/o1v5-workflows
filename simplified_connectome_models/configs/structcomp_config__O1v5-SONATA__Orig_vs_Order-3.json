@@ -1,0 +1,181 @@
+{
+  "working_dir": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/pokorny/simplified_connectome_models/struct_comparison/O1v5-SONATA",
+  "out_dir": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/pokorny/simplified_connectome_models/struct_comparison/O1v5-SONATA",
+  "circuits": {
+    "0": {
+      "circuit_config": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/circuits/O1v5-SONATA/sonata/circuit_config_tmp.json",
+      "circuit_name": "Orig"
+    },
+    "1": {
+      "circuit_config": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/circuits/O1v5-SONATA__ConnRewireOrder3mc2EE100pct/circuit_config.json",
+      "circuit_name": "Order-3"
+    }
+  },
+  "plot_types": [
+    {
+      "name": "ConnPerLayer_mc2EE",
+      "fct": {
+        "source": "connectivity",
+        "kwargs": {
+          "group_by": "layer",
+          "skip_empty_groups": false,
+          "sel_src": {
+            "hypercolumn": 2,
+            "synapse_class": "EXC"
+          },
+          "sel_dest": {
+            "hypercolumn": 2,
+            "synapse_class": "EXC"
+          }
+        }
+      },
+      "res_sel": [
+        "nsyn_conn",
+        "conn_prob"
+      ],
+      "range_prctile": 100,
+      "fig_size": [
+        11,
+        3
+      ],
+      "fig_file": {
+        "format": "png",
+        "dpi": 600
+      }
+    },
+    {
+      "name": "ConnPerMtype_mc2EE",
+      "fct": {
+        "source": "connectivity",
+        "kwargs": {
+          "group_by": "mtype",
+          "skip_empty_groups": true,
+          "sel_src": {
+            "hypercolumn": 2,
+            "synapse_class": "EXC"
+          },
+          "sel_dest": {
+            "hypercolumn": 2,
+            "synapse_class": "EXC"
+          }
+        }
+      },
+      "res_sel": [
+        "nsyn_conn",
+        "conn_prob"
+      ],
+      "range_prctile": 100,
+      "fig_size": [
+        11,
+        3
+      ],
+      "fig_file": {
+        "format": "png",
+        "dpi": 600
+      }
+    },
+    {
+      "name": "PropsPerLayer_mc2EE",
+      "fct": {
+        "source": "properties",
+        "kwargs": {
+          "group_by": "layer",
+          "skip_empty_groups": false,
+          "sel_src": {
+            "hypercolumn": 2,
+            "synapse_class": "EXC"
+          },
+          "sel_dest": {
+            "hypercolumn": 2,
+            "synapse_class": "EXC"
+          },
+          "fct": "np.mean"
+        }
+      },
+      "res_sel": [
+        "conductance",
+        "decay_time",
+        "delay",
+        "depression_time",
+        "facilitation_time",
+        "syn_type_id",
+        "u_syn"
+      ],
+      "range_prctile": 100,
+      "fig_size": [
+        11,
+        3
+      ],
+      "fig_file": {
+        "format": "png",
+        "dpi": 600
+      }
+    },
+    {
+      "name": "PropsPerMtype_mc2EE",
+      "fct": {
+        "source": "properties",
+        "kwargs": {
+          "group_by": "mtype",
+          "skip_empty_groups": true,
+          "sel_src": {
+            "hypercolumn": 2,
+            "synapse_class": "EXC"
+          },
+          "sel_dest": {
+            "hypercolumn": 2,
+            "synapse_class": "EXC"
+          },
+          "fct": "np.mean"
+        }
+      },
+      "res_sel": [
+        "conductance",
+        "decay_time",
+        "delay",
+        "depression_time",
+        "facilitation_time",
+        "syn_type_id",
+        "u_syn"
+      ],
+      "range_prctile": 100,
+      "fig_size": [
+        11,
+        3
+      ],
+      "fig_file": {
+        "format": "png",
+        "dpi": 600
+      }
+    },
+    {
+      "name": "Adjacency_mc2EE",
+      "fct": {
+        "source": "adjacency",
+        "kwargs": {
+          "sel_src": {
+            "hypercolumn": 2,
+            "synapse_class": "EXC"
+          },
+          "sel_dest": {
+            "hypercolumn": 2,
+            "synapse_class": "EXC"
+          }
+        }
+      },
+      "res_sel": [
+        "adj",
+        "adj_cnt"
+      ],
+      "range_prctile": 95,
+      "fig_size": [
+        11,
+        3
+      ],
+      "fig_file": {
+        "format": "png",
+        "dpi": 600
+      }
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "working_dir": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/pokorny/simplified_connectome_models/model_building/O1v5-SONATA",
+  "out_dir": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/pokorny/simplified_connectome_models/model_building/O1v5-SONATA",
+  "seed": 7531,
+  "circuit_config": "/gpfs/bbp.cscs.ch/project/proj9/bisimplices/circuits/O1v5-SONATA/sonata/circuit_config_tmp.json",
+  "model": {
+    "name": "ConnProb4thOrderO1v5mc2EE",
+    "fct": {
+      "source": "conn_prob",
+      "kwargs": {
+        "order": "4R",
+        "axial_coord": 1,
+        "sel_src": {
+          "hypercolumn": 2,
+          "synapse_class": "EXC"
+        },
+        "sel_dest": {
+          "hypercolumn": 2,
+          "synapse_class": "EXC"
+        },
+        "min_count_per_bin": 100,
+        "bin_size_um": 50,
+        "max_range_um": [
+          400,
+          [
+            -1600,
+            600
+          ]
+        ],
+        "smoothing_sigma_um": null,
+        "plot_model_ovsampl": 7,
+        "plot_model_extsn": 0,
+        "sample_size": null
+      }
+    }
+  }
+}
