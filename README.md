@@ -56,3 +56,7 @@ Workflow configurations and extensions for setting up and running simulation cam
 ## IMPORTANT:
 * Unless <code>--workflows-dir</code> is specified, <code>bbp-workflow ...</code> must be launched from the root folder containing <code>./workflows</code> as a subfolder!
 * The Nexus instance (staging or production) can be selected in the <code>[DEFAULT]</code> section in the config files!
+
+# Funding & Acknowledgment
+This development is supported by funding to the Blue Brain Project, a research center of the École polytechnique fédérale de Lausanne (EPFL), from the Swiss government's ETH Board of the Swiss Federal Institutes of Technology.
+Copyright © 2024 Blue Brain Project/EPFL
