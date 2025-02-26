@@ -1,3 +1,7 @@
+> [!WARNING]
+> The Blue Brain Project concluded in December 2024, so development has ceased under the BlueBrain GitHub organization.
+> Future development will take place at: https://github.com/openbraininstitute/o1v5-workflows
+
 # O1v5-workflows
 
 Workflow configurations and extensions for setting up and running simulation campaigns using the O1v5 circuit
